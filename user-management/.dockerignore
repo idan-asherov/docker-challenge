@@ -1,0 +1,8 @@
+node_modules
+
+.gitignore
+.env
+.dockeringore
+.git
+
+reqests.http 

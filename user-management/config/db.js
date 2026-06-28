@@ -2,14 +2,12 @@ const mongoose = require("mongoose");
 
 async function connectDB() {
   try {
-    //this is a code which perhaps can go wrong so we put it in a try catch block
-    await mongoose.connect(
-      `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.qm94ulj.mongodb.net/${process.env.DB_NAME}`,
-    );
+    // This now uses the MONGO_URI from your .env file
+    await mongoose.connect(process.env.MONGO_URI);
     console.log("Mongo DB Connected");
   } catch (error) {
-    console.log("mongo db failed!!!");
-    //catch the error and give methe function to reacte
+    // I added 'error' here so we can see the exact reason if it fails
+    console.log("mongo db failed!!!", error.message);
   }
 }
-module.exports = connectDB; //הפונקציה הזו זמינה לקבצים אחרים
+module.exports = connectDB;

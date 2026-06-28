@@ -16,8 +16,22 @@ POST http://localhost:3000/api/users
 Content-Type: application/json
 
 {
-  "name": "Bruce Wayne",
-  "email": "batman@gotham.com",
-  "password": "im_batman_123",
-  "age": 35
+  "name": "eded fbfbh",
+  "email": "ddfih@gtm.com",
+  "password": "12322",
+  "age": 16
 }
+
+
+### Update an Existing User
+PUT http://localhost:3000/api/users/PASTE_BRUCE_WAYNE_ID_HERE
+Content-Type: application/json
+
+{
+  "name": "The Batman",
+  "age": 36
+}
+
+### Delete a User
+
+DELETE {{baseURL}}/api/users/6a21c9f0e89585768d0e2720

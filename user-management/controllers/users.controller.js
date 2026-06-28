@@ -1,8 +1,6 @@
 const User = require("../model/User");
 
-// -----------------------------------------
-// GET ALL USERS
-// -----------------------------------------
+// 1. GET ALL USERS
 async function getAllUsers(req, res) {
   try {
     const users = await User.find();
@@ -12,60 +10,72 @@ async function getAllUsers(req, res) {
   }
 }
 
-// -----------------------------------------
-// GET USER BY ID
-// -----------------------------------------
+// 2. GET USER BY ID
 async function getUserById(req, res) {
   try {
     const user = await User.findById(req.params.id);
-    console.log("here is the user", user);
-
     if (!user) {
-      // Added 'return' here so the function stops if no user is found!
-      return res.status(404).json({ message: "user not found" });
+      return res.status(404).json({ message: "User not found" });
     }
-
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-} // <-- This is the closing brace for the whole function!
+}
 
-// -----------------------------------------
-// CREATE NEW USER (POST)
-// -----------------------------------------
+// 3. CREATE USER
 async function createUser(req, res) {
   try {
-    // 1. Grab the data sent by the client
-    const { name, email, password, age } = req.body;
+    const newUser = await User.create(req.body);
+    res.status(201).json(newUser);
+  } catch (error) {
+    res
+      .status(400)
+      .json({ message: "User Creation Failed", error: error.message });
+  }
+}
 
-    // 2. Create a new MongoDB document
-    const newUser = new User({
-      name,
-      email,
-      password,
-      age,
+// 4. UPDATE USER
+async function updateUser(req, res) {
+  try {
+    const { id } = req.params;
+    const updatedData = req.body;
+
+    const updatedUser = await User.findByIdAndUpdate(id, updatedData, {
+      new: true,
+      runValidators: true,
     });
 
-    // 3. Save it to the database!
-    const savedUser = await newUser.save();
-
-    // 4. Send back a 201 Created status and the new user
-    res.status(201).json(savedUser);
-  } catch (error) {
-    // If the email already exists, MongoDB throws error code 11000
-    if (error.code === 11000) {
-      return res
-        .status(400)
-        .json({ message: "That email is already registered!" });
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
     }
+
+    res.status(200).json(updatedUser);
+  } catch (error) {
     res.status(500).json({ message: error.message });
   }
 }
 
-// Export all THREE functions now
+// 5. DELETE USER
+async function deleteUser(req, res) {
+  try {
+    const deletedUser = await User.findByIdAndDelete(req.params.id);
+    if (!deletedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res
+      .status(200)
+      .json({ message: "User deleted successfully", user: deletedUser._id });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+// Export all functions
 module.exports = {
   getAllUsers,
   getUserById,
-  createUser, // <-- Don't forget to export this!
+  createUser,
+  updateUser,
+  deleteUser,
 };
