@@ -2,17 +2,17 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy dependency manifests first to leverage Docker cache layers
+# Copy dependency manifests first
 COPY package*.json ./
 
-# Install dependencies (production-only to keep the image small)
-RUN npm install --only=production
+# FIXED: Standard install ensures all structural tooling packages are present
+RUN npm install
 
 # Copy the rest of the application files
 COPY . .
 
-# Expose the internal port your Express server listens on
+# Expose the internal port 
 EXPOSE 3000
 
-# FIXED: We use "node app.js" directly to avoid nodemon overhead in containers
+# Command to execute the app
 CMD ["node", "app.js"]
